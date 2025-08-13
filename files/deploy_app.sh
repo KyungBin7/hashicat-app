@@ -5,7 +5,6 @@
 # The web app has a customizable image and some text.
 
 cat << EOM > /var/www/html/index.html
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -52,24 +51,7 @@ cat << EOM > /var/www/html/index.html
             position: relative;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 2px,
-                    rgba(0, 255, 136, 0.03) 2px,
-                    rgba(0, 255, 136, 0.03) 4px
-                );
-            pointer-events: none;
-            z-index: 1;
-        }
+        /* Scanline effect removed for performance */
 
         .matrix-rain {
             position: fixed;
@@ -79,7 +61,7 @@ cat << EOM > /var/www/html/index.html
             bottom: 0;
             pointer-events: none;
             z-index: 0;
-            opacity: 0.02;
+            opacity: 0.01;
         }
 
         .container {
@@ -95,12 +77,13 @@ cat << EOM > /var/www/html/index.html
                 0 0 40px rgba(0, 0, 0, 0.5),
                 0 0 80px rgba(0, 255, 136, 0.1),
                 inset 0 0 1px rgba(0, 255, 136, 0.2);
-            animation: containerGlow 4s ease-in-out infinite alternate;
+            will-change: box-shadow;
+            animation: containerGlow 6s ease-in-out infinite alternate;
         }
 
         @keyframes containerGlow {
-            0% { box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 60px rgba(0, 255, 136, 0.1), inset 0 0 1px rgba(0, 255, 136, 0.2); }
-            100% { box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 80px rgba(0, 212, 255, 0.1), inset 0 0 1px rgba(0, 212, 255, 0.2); }
+            0% { box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 255, 136, 0.05); }
+            100% { box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 212, 255, 0.05); }
         }
 
         .terminal-header {
@@ -127,7 +110,7 @@ cat << EOM > /var/www/html/index.html
         }
 
         .terminal-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) translateZ(0);
         }
 
         .terminal-btn.close { background: #ff5f57; }
@@ -164,7 +147,7 @@ cat << EOM > /var/www/html/index.html
             text-align: center;
             font-family: monospace;
             letter-spacing: 2px;
-            animation: flicker 3s infinite;
+            animation: flicker 4s infinite;
         }
 
         @keyframes flicker {
@@ -211,7 +194,7 @@ cat << EOM > /var/www/html/index.html
             box-shadow: 
                 0 0 30px rgba(0, 255, 136, 0.3),
                 0 0 60px rgba(0, 255, 136, 0.1);
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
         }
 
         .main-image:hover {
@@ -234,14 +217,13 @@ cat << EOM > /var/www/html/index.html
             position: relative;
             text-transform: uppercase;
             letter-spacing: 3px;
-            animation: glitch 2s infinite;
+            animation: glitch 3s infinite;
+            will-change: text-shadow;
         }
 
         @keyframes glitch {
-            0%, 100% { text-shadow: 2px 0 var(--primary), -2px 0 var(--secondary); }
-            25% { text-shadow: -2px 0 var(--primary), 2px 0 var(--secondary); }
-            50% { text-shadow: 2px 0 var(--secondary), -2px 0 var(--accent); }
-            75% { text-shadow: -2px 0 var(--accent), 2px 0 var(--primary); }
+            0%, 100% { text-shadow: 1px 0 var(--primary), -1px 0 var(--secondary); }
+            50% { text-shadow: -1px 0 var(--primary), 1px 0 var(--secondary); }
         }
 
         .subtitle {
@@ -303,7 +285,7 @@ cat << EOM > /var/www/html/index.html
             border: 1px solid var(--border);
             border-radius: 6px;
             padding: 20px;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
         }
@@ -316,7 +298,9 @@ cat << EOM > /var/www/html/index.html
             width: 100%;
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            animation: scan 4s linear infinite;
+            transform: translateZ(0);
+            will-change: left;
+            animation: scan 6s linear infinite;
         }
 
         @keyframes scan {
@@ -324,10 +308,10 @@ cat << EOM > /var/www/html/index.html
         }
 
         .feature-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-4px) translateZ(0);
             border-color: var(--primary);
             background: var(--bg-main);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         .feature-icon {
@@ -366,7 +350,7 @@ cat << EOM > /var/www/html/index.html
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
         }
@@ -381,7 +365,8 @@ cat << EOM > /var/www/html/index.html
             background: var(--primary);
             border-radius: 50%;
             transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+            transition: transform 0.6s;
+            will-change: transform;
         }
 
         .cta-button:hover {
@@ -391,8 +376,7 @@ cat << EOM > /var/www/html/index.html
         }
 
         .cta-button:hover::before {
-            width: 300px;
-            height: 300px;
+            transform: translate(-50%, -50%) scale(100);
         }
 
         .cta-button span {
@@ -436,7 +420,7 @@ cat << EOM > /var/www/html/index.html
             height: 8px;
             border-radius: 50%;
             background: var(--primary);
-            animation: pulse 2s infinite;
+            animation: pulse 3s infinite;
         }
 
         @keyframes pulse {
@@ -474,7 +458,7 @@ cat << EOM > /var/www/html/index.html
 
             <div class="image-container">
                 <div class="code-frame">
-                    <img class="main-image" src="https://placekitten.com/400/300" alt="Cat Component">
+                    <img class="main-image" src="https://cataas.com/cat?width=400&height=300" alt="Cat Component">
                 </div>
             </div>
 
@@ -581,7 +565,7 @@ cat << EOM > /var/www/html/index.html
             }
         }
 
-        setInterval(draw, 35);
+        setInterval(draw, 50);
 
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
