@@ -47,7 +47,7 @@ cat << EOM > /var/www/html/index.html
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 40px 20px;
             position: relative;
         }
 
