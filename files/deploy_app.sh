@@ -5,11 +5,12 @@
 # The web app has a customizable image and some text.
 
 cat << EOM > /var/www/html/index.html
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meow! - Modern Cat App</title>
+    <title>Meow! - Developer Edition</title>
     <style>
         * {
             margin: 0;
@@ -18,415 +19,575 @@ cat << EOM > /var/www/html/index.html
         }
 
         :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #f093fb;
-            --text-dark: #2d3748;
-            --text-light: #718096;
-            --bg-light: #f7fafc;
-            --white: #ffffff;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 20px rgba(0,0,0,0.15);
-            --shadow-xl: 0 20px 40px rgba(0,0,0,0.2);
+            --primary: #00ff88;
+            --secondary: #00d4ff;
+            --accent: #ff0080;
+            --warning: #ffaa00;
+            --bg-main: #0a0e27;
+            --bg-dark: #050814;
+            --surface: #0d1117;
+            --surface-light: #161b22;
+            --border: rgba(48, 54, 61, 0.8);
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-dim: #484f58;
+            --code-comment: #6e7681;
+            --glow-primary: rgba(0, 255, 136, 0.4);
+            --glow-secondary: rgba(0, 212, 255, 0.4);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Monaco, monospace;
+            background: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 100%, rgba(255, 0, 128, 0.05) 0%, transparent 50%);
             min-height: 100vh;
+            color: var(--text-primary);
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             padding: 20px;
             position: relative;
-            overflow-x: hidden;
         }
 
-        /* Animated background shapes */
-        .bg-shape {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            animation: float 20s infinite ease-in-out;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 255, 136, 0.03) 2px,
+                    rgba(0, 255, 136, 0.03) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
         }
 
-        .bg-shape:nth-child(1) {
-            width: 80px;
-            height: 80px;
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .bg-shape:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            top: 70%;
-            right: 10%;
-            animation-delay: 3s;
-        }
-
-        .bg-shape:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            bottom: 10%;
-            left: 30%;
-            animation-delay: 5s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            33% { transform: translateY(-20px) rotate(120deg); }
-            66% { transform: translateY(20px) rotate(240deg); }
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.02;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            box-shadow: var(--shadow-xl);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
             overflow: hidden;
             position: relative;
-            z-index: 1;
-            animation: slideUp 0.6s ease-out;
+            z-index: 10;
+            box-shadow: 
+                0 0 40px rgba(0, 0, 0, 0.5),
+                0 0 80px rgba(0, 255, 136, 0.1),
+                inset 0 0 1px rgba(0, 255, 136, 0.2);
+            animation: containerGlow 4s ease-in-out infinite alternate;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes containerGlow {
+            0% { box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 60px rgba(0, 255, 136, 0.1), inset 0 0 1px rgba(0, 255, 136, 0.2); }
+            100% { box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 80px rgba(0, 212, 255, 0.1), inset 0 0 1px rgba(0, 212, 255, 0.2); }
         }
 
-        .header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            padding: 40px;
-            text-align: center;
-            position: relative;
+        .terminal-header {
+            background: var(--bg-main);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: 0;
-            right: 0;
-            height: 40px;
-            background: white;
-            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-        }
-
-        .nav-dots {
-            position: absolute;
-            top: 20px;
-            left: 30px;
+        .terminal-controls {
             display: flex;
             gap: 8px;
         }
 
-        .dot {
+        .terminal-btn {
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        .dot:first-child { background: #ff5f56; }
-        .dot:nth-child(2) { background: #ffbd2e; }
-        .dot:nth-child(3) { background: #27c93f; }
+        .terminal-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .terminal-btn.close { background: #ff5f57; }
+        .terminal-btn.minimize { background: #ffbd2e; }
+        .terminal-btn.maximize { background: #28ca42; }
+
+        .terminal-title {
+            color: var(--text-dim);
+            font-size: 12px;
+            font-weight: 500;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .terminal-path {
+            color: var(--text-dim);
+            font-size: 11px;
+            margin-left: auto;
+            padding: 2px 8px;
+            background: var(--surface-light);
+            border-radius: 4px;
+        }
 
         .content {
-            padding: 60px 40px 40px;
+            padding: 40px;
+        }
+
+        .ascii-art {
+            color: var(--primary);
+            font-size: 10px;
+            line-height: 1.2;
+            margin-bottom: 30px;
             text-align: center;
+            font-family: monospace;
+            letter-spacing: 2px;
+            animation: flicker 3s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
 
         .image-container {
             position: relative;
             display: inline-block;
-            margin-bottom: 30px;
-            animation: bounce 2s infinite;
+            margin: 30px auto;
+            display: block;
+            text-align: center;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .code-frame {
+            position: relative;
+            display: inline-block;
+            padding: 20px;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .code-frame::before {
+            content: '<!-- cat.component.tsx -->';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--surface);
+            padding: 0 10px;
+            color: var(--code-comment);
+            font-size: 11px;
         }
 
         .main-image {
-            width: 100%;
+            display: block;
             max-width: 400px;
+            width: 100%;
             height: auto;
-            border-radius: 20px;
-            box-shadow: var(--shadow-lg);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 4px;
+            filter: brightness(0.9) contrast(1.1);
+            border: 2px solid var(--primary);
+            box-shadow: 
+                0 0 30px rgba(0, 255, 136, 0.3),
+                0 0 60px rgba(0, 255, 136, 0.1);
+            transition: all 0.3s ease;
         }
 
         .main-image:hover {
-            transform: scale(1.05) rotate(2deg);
-            box-shadow: var(--shadow-xl);
-        }
-
-        .image-decoration {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 3px dashed var(--accent-color);
-            border-radius: 20px;
-            top: 10px;
-            left: 10px;
-            z-index: -1;
-            opacity: 0.5;
+            transform: scale(1.02);
+            filter: brightness(1) contrast(1.2);
+            box-shadow: 
+                0 0 40px rgba(0, 255, 136, 0.4),
+                0 0 80px rgba(0, 255, 136, 0.2);
         }
 
         h1 {
-            font-size: 3em;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 30px 0 10px;
+            text-align: center;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 20px;
-            animation: fadeInScale 0.8s ease-out 0.3s both;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: glitch 2s infinite;
         }
 
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        @keyframes glitch {
+            0%, 100% { text-shadow: 2px 0 var(--primary), -2px 0 var(--secondary); }
+            25% { text-shadow: -2px 0 var(--primary), 2px 0 var(--secondary); }
+            50% { text-shadow: 2px 0 var(--secondary), -2px 0 var(--accent); }
+            75% { text-shadow: -2px 0 var(--accent), 2px 0 var(--primary); }
         }
 
         .subtitle {
-            font-size: 1.3em;
-            color: var(--text-light);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
             margin-bottom: 30px;
-            animation: fadeIn 0.8s ease-out 0.5s both;
+            font-family: monospace;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .subtitle::before { content: '// '; color: var(--code-comment); }
+        .subtitle::after { content: ' */'; color: var(--code-comment); }
 
-        .welcome-text {
-            font-size: 1.1em;
-            color: var(--text-dark);
+        .code-block {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
+            margin: 30px 0;
+            position: relative;
+            font-size: 13px;
             line-height: 1.6;
-            max-width: 600px;
-            margin: 0 auto 40px;
-            padding: 25px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 15px;
-            border-left: 4px solid var(--primary-color);
-            animation: slideInLeft 0.8s ease-out 0.7s both;
+            overflow-x: auto;
         }
 
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        .code-block::before {
+            content: 'main.ts';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            background: var(--surface-light);
+            padding: 4px 12px;
+            border-radius: 6px 0 6px 0;
+            font-size: 11px;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
         }
+
+        .code-line {
+            display: block;
+            padding: 2px 0;
+        }
+
+        .code-keyword { color: var(--accent); }
+        .code-string { color: var(--primary); }
+        .code-function { color: var(--secondary); }
+        .code-comment { color: var(--code-comment); }
+        .code-variable { color: var(--warning); }
 
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
             margin: 40px 0;
         }
 
         .feature-card {
-            padding: 25px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: var(--shadow-sm);
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
             transition: all 0.3s ease;
-            animation: fadeInUp 0.8s ease-out both;
+            position: relative;
+            overflow: hidden;
         }
 
-        .feature-card:nth-child(1) { animation-delay: 0.9s; }
-        .feature-card:nth-child(2) { animation-delay: 1.1s; }
-        .feature-card:nth-child(3) { animation-delay: 1.3s; }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scan 4s linear infinite;
+        }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes scan {
+            to { left: 100%; }
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            background: var(--bg-main);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .feature-icon {
-            font-size: 2.5em;
-            margin-bottom: 15px;
-        }
-
-        .feature-title {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: var(--text-dark);
+            color: var(--primary);
+            font-size: 24px;
             margin-bottom: 10px;
         }
 
+        .feature-title {
+            color: var(--secondary);
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
         .feature-description {
-            color: var(--text-light);
+            color: var(--text-secondary);
+            font-size: 12px;
             line-height: 1.5;
+        }
+
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
         }
 
         .cta-button {
             display: inline-block;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
+            padding: 12px 30px;
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
             text-decoration: none;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 1.1em;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             transition: all 0.3s ease;
-            box-shadow: var(--shadow-md);
-            margin-top: 20px;
-            animation: pulse 2s infinite;
+            position: relative;
+            overflow: hidden;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--primary);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
         }
 
         .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            color: var(--bg-dark);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .cta-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .cta-button span {
+            position: relative;
+            z-index: 1;
         }
 
         .footer {
             margin-top: 40px;
-            padding-top: 30px;
-            border-top: 2px solid #e2e8f0;
-            color: var(--text-light);
-            font-size: 0.9em;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 12px;
         }
 
-        .social-links {
+        .status-bar {
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background: var(--bg-main);
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--text-dim);
         }
 
-        .social-link {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .status-left {
+            display: flex;
+            gap: 20px;
+        }
+
+        .status-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            transition: transform 0.3s ease;
+            gap: 5px;
         }
 
-        .social-link:hover {
-            transform: rotate(360deg) scale(1.1);
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: pulse 2s infinite;
         }
 
-        /* Responsive design */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         @media (max-width: 768px) {
-            h1 { font-size: 2em; }
-            .subtitle { font-size: 1.1em; }
-            .content { padding: 40px 20px; }
+            .content { padding: 20px; }
+            h1 { font-size: 1.8em; }
             .features { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- Animated background shapes -->
-    <div class="bg-shape"></div>
-    <div class="bg-shape"></div>
-    <div class="bg-shape"></div>
-
+    <div class="matrix-rain"></div>
+    
     <div class="container">
-        <div class="header">
-            <div class="nav-dots">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
+        <div class="terminal-header">
+            <div class="terminal-controls">
+                <button class="terminal-btn close"></button>
+                <button class="terminal-btn minimize"></button>
+                <button class="terminal-btn maximize"></button>
             </div>
+            <div class="terminal-title">meow-app@1.0.0</div>
+            <div class="terminal-path">~/projects/meow-app</div>
         </div>
 
         <div class="content">
-            <!-- Image Section -->
+            <pre class="ascii-art">
+    /\_/\  
+   ( o.o ) 
+    > ^ <  
+            </pre>
+
             <div class="image-container">
-                <div class="image-decoration"></div>
-                <img class="main-image" src="http://${PLACEHOLDER}/${WIDTH}/${HEIGHT}" alt="Meow App">
+                <div class="code-frame">
+                    <img class="main-image" src="https://placekitten.com/400/300" alt="Cat Component">
+                </div>
             </div>
 
-            <!-- Title Section -->
-            <h1>Meow World!</h1>
-            <p class="subtitle">The Ultimate Cat Experience 🐱</p>
+            <h1>&lt;Meow.World /&gt;</h1>
+            <p class="subtitle">Purr-fectly engineered for developers</p>
 
-            <!-- Welcome Message -->
-            <div class="welcome-text">
-                Welcome to <strong>${PREFIX}'s</strong> amazing app.<br>
-                <em>AJ Don't Stop</em> - Where cats meet innovation! 
+            <div class="code-block">
+                <span class="code-line"><span class="code-keyword">import</span> { <span class="code-function">Cat</span> } <span class="code-keyword">from</span> <span class="code-string">'@meow/core'</span>;</span>
+                <span class="code-line"></span>
+                <span class="code-line"><span class="code-keyword">const</span> <span class="code-variable">app</span> = <span class="code-keyword">new</span> <span class="code-function">Cat</span>({</span>
+                <span class="code-line">  <span class="code-variable">name</span>: <span class="code-string">'${PREFIX}'</span>,</span>
+                <span class="code-line">  <span class="code-variable">mode</span>: <span class="code-string">'development'</span>,</span>
+                <span class="code-line">  <span class="code-variable">debug</span>: <span class="code-keyword">true</span></span>
+                <span class="code-line">});</span>
+                <span class="code-line"></span>
+                <span class="code-line"><span class="code-comment">// Initialize with purr engine v2.0</span></span>
+                <span class="code-line"><span class="code-variable">app</span>.<span class="code-function">start</span>().<span class="code-function">then</span>(() => {</span>
+                <span class="code-line">  <span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-string">'🐱 Meow server running...'</span>);</span>
+                <span class="code-line">});</span>
             </div>
 
-            <!-- Feature Cards -->
             <div class="features">
                 <div class="feature-card">
-                    <div class="feature-icon">🚀</div>
+                    <div class="feature-icon">⚡</div>
                     <div class="feature-title">Lightning Fast</div>
-                    <div class="feature-description">Experience blazing fast performance with our optimized platform</div>
+                    <div class="feature-description">Optimized performance with lazy loading and tree-shaking</div>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🎨</div>
-                    <div class="feature-title">Beautiful Design</div>
-                    <div class="feature-description">Enjoy a modern, clean interface that's a pleasure to use</div>
+                    <div class="feature-icon">🛠</div>
+                    <div class="feature-title">Developer First</div>
+                    <div class="feature-description">Built-in debugging tools, hot reload, and TypeScript support</div>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🔒</div>
-                    <div class="feature-title">Secure & Reliable</div>
-                    <div class="feature-description">Your data is safe with enterprise-grade security</div>
+                    <div class="feature-title">Secure by Default</div>
+                    <div class="feature-description">Enterprise-grade security with automated vulnerability scanning</div>
                 </div>
             </div>
 
-            <!-- Call to Action -->
-            <a href="#" class="cta-button">Get Started Today</a>
+            <div class="cta-section">
+                <a href="#" class="cta-button">
+                    <span>npm install @meow/core</span>
+                </a>
+            </div>
 
-            <!-- Footer -->
             <div class="footer">
-                <p>Made with ❤️ by ${PREFIX}</p>
-                <div class="social-links">
-                    <a href="#" class="social-link">📧</a>
-                    <a href="#" class="social-link">🐦</a>
-                    <a href="#" class="social-link">📱</a>
+                <p>Built with ❤️ by ${PREFIX} | MIT License | v1.0.0</p>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-left">
+                <div class="status-item">
+                    <span class="status-dot"></span>
+                    <span>Connected</span>
                 </div>
+                <div class="status-item">
+                    <span>UTF-8</span>
+                </div>
+                <div class="status-item">
+                    <span>TypeScript</span>
+                </div>
+            </div>
+            <div class="status-right">
+                <span>Ln 42, Col 7</span>
             </div>
         </div>
     </div>
+
+    <script>
+        // Matrix rain effect
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        document.querySelector('.matrix-rain').appendChild(canvas);
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const matrix = "MEOW01";
+        const matrixArray = matrix.split("");
+        const fontSize = 10;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for(let x = 0; x < columns; x++) {
+            drops[x] = Math.random() * canvas.height;
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(10, 14, 39, 0.04)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#00ff88';
+            ctx.font = fontSize + 'px monospace';
+            
+            for(let i = 0; i < drops.length; i++) {
+                const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 35);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
 </body>
 </html>
 EOM
